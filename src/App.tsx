@@ -6,9 +6,9 @@ import ViewPost from './components/ViewPost'
 
 
 function App() {
-  const [posts, setPosts] = useState<Item[]>([]);
-
   const [view, setView] = useState<string>('Home');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [posts, setPosts] = useState<Item[]>([]);
   const [post, setPost] = useState<Item>({
     id: 0,
     title: '',
@@ -18,9 +18,8 @@ function App() {
   });
 
   // 함수
-  // 생성
-  console.log(posts);
 
+  // 생성
   const onCreate = (post: Item): void => {
     console.log('onCreat')
     setPosts([post, ...posts]);
@@ -62,8 +61,12 @@ function App() {
     return (
       <div className='container'>
         <div className='header'>
-          <span>Blog</span>
-          <button className='writeBtn' onClick={() => onClickWrite()}>글쓰기</button>
+          <div className='title'>
+            <span>Blog</span>
+          </div>
+          <div className='write'>
+            <button className='writeBtn' onClick={() => onClickWrite()}>글쓰기</button>
+          </div>
         </div>
         <div className='contents'>
           <PostList posts={posts} onRemove={onRemove} onClickWrite={onClickWrite} onClickDetail={onClickDetail} />
@@ -74,6 +77,7 @@ function App() {
 
   switch (view) {
     case 'Home':
+      {console.log(posts);}
       return <Home />
     case 'Create':
       return <Write onCreate={onCreate} onUpdate={onUpdate} onCancel={onCancel} />

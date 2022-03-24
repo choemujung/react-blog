@@ -15,3 +15,10 @@ export class NextId {
     }
 }
 
+export const getNow = (): string => {
+    const date = new Date();
+    return (
+        String(date.getFullYear()) + '. ' + String(date.getMonth()) + '. ' + String(date.getDay()) + '. ' + 
+        String(date.getHours()) + ':' + String(date.getMinutes())
+    );
+}

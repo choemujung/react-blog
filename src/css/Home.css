@@ -1,0 +1,12 @@
+.header {
+    display: flex;
+}
+
+.header .title {
+    width: 70%;
+    font-size: 40px;
+}
+.header .write {
+    width: 30%;
+    align-items: center;
+}

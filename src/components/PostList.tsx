@@ -23,7 +23,7 @@ function PostItem({ post, onRemove, onClickWrite, onClickDetail }: ItemProps) {
 
     return (
         <div className="container" onMouseEnter={() => setHide(false)} onMouseLeave={() => setHide(true)}>
-            <span onClick={() => onClickDetail(post)}>{post.title}</span>
+            <span onClick={() => onClickDetail(post)}>{post.title}{}</span><span>{post.date}</span>
             {!isHide && (
                 <span >
                     <button onClick={() => onClickWrite(post)}>수정</button>
