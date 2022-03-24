@@ -86,18 +86,7 @@ function App() {
   return (
     <Home />
   );
-  // switch (view) {
-  //   case 'Home':
-  //     return <Home />;
-  //   case 'Write':
-  //     return <Write nextId={nextId.current} onCreate={onCreate} onCancel={onCancel} />;
-  //   case 'ViewPost':
-  //     // return <ViewPost post={post} setView={setView} onItemClick={onItemClick}/>
-  //   case 'Edit':
-  //     return <Edit post={post} onUpdate={onUpdate} onCancel={onCancel}/>
-  //   default:
-  //     return null;
-  // }
+
 }
 
 export default App;
