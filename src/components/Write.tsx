@@ -1,28 +1,52 @@
-import { useRef } from "react";
-import { Item } from "../types"
+import { useEffect, useRef } from "react";
+import { Item, NextId } from "../types"
 
 interface WriteProps {
-    nextId: number;
+    post?: Item;
     onCreate: (post:Item) => void;
+    onUpdate: (post:Item) => void;
     onCancel: ()=>void;
 }
 
-function Write({nextId, onCreate, onCancel}:WriteProps) {
+function Write({post, onCreate, onUpdate, onCancel}:WriteProps) {
     const titleRef = useRef<HTMLInputElement>(null);
     const contentRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        if (titleRef.current !== null && contentRef.current !== null) {
+            if (post === undefined) {
+                titleRef.current.value = '';
+                contentRef.current.value = '';
+            } else {
+                titleRef.current.value = post.title;
+                contentRef.current.value = post.content;
+            }
+        }
+    },[]);
 
     const handleClickPublishBtn = () => {
         if ((titleRef.current !== null) && (contentRef.current !== null)) {
             if (titleRef.current.value !== '') {
                 if (contentRef.current.value !== '') {
-                    const newPost:Item = {
-                        id: nextId,
-                        title: titleRef.current.value,
-                        content: contentRef.current.value,
-                        category: '',
-                        date:'',
+                    if(post === undefined){
+                        const newPost:Item = {
+                            id: NextId.getId(),
+                            title: titleRef.current.value,
+                            content: contentRef.current.value,
+                            category: '',
+                            date:'',
+                        }
+                        onCreate(newPost);
+                    } else {
+                        const newPost:Item = {
+                            id: post.id,
+                            title: titleRef.current.value,
+                            content: contentRef.current.value,
+                            category: '',
+                            date:'',
+                        }
+                        onUpdate(newPost);
                     }
-                    onCreate(newPost);
                 } else {
                     alert('본문을 입력해주세요.');
                 }
@@ -47,4 +71,7 @@ function Write({nextId, onCreate, onCancel}:WriteProps) {
     )
 }
 
+Write.defaultProps ={
+    post: undefined
+};
 export default Write;

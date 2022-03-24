@@ -5,41 +5,39 @@ import ViewPost from "./ViewPost";
 // props type
 interface ItemProps {
     post: Item;
-    nextId: number;
     onRemove: (id: number) => void;
-    changeToEdit: (view:string, post:Item) => void;
-    changeToViewPost: (view: string, post:Item) => void;
+    onClickWrite: (item: Item) => void;
+    onClickDetail: (item: Item) => void;
 }
-    
+
 interface ListProps {
     posts: Item[];
-    nextId: number;
     onRemove: (id: number) => void;
-    changeToEdit: (view:string, post:Item) => void;
-    changeToViewPost: (view: string, post:Item) => void;
+    onClickWrite: (item:Item) => void;
+    onClickDetail: (item:Item) => void;
 }
 
 // components
-function PostItem({ post, nextId, onRemove, changeToEdit, changeToViewPost }: ItemProps) {
+function PostItem({ post, onRemove, onClickWrite, onClickDetail }: ItemProps) {
     const [isHide, setHide] = useState<boolean>(true);
 
     return (
         <div className="container" onMouseEnter={() => setHide(false)} onMouseLeave={() => setHide(true)}>
-            <span onClick={()=>changeToViewPost('ViewPost', post)}>{post.title}</span>
+            <span onClick={() => onClickDetail(post)}>{post.title}</span>
             {!isHide && (
                 <span >
-                    <button onClick={()=>changeToEdit('Edit', post)}>수정</button><button>삭제</button>
+                    <button onClick={() => onClickWrite(post)}>수정</button>
+                    <button onClick={() => onRemove(post.id)}>삭제</button>
                 </span>
             )}
         </div>
     );
 }
-function PostList({ posts, nextId, onRemove, changeToEdit, changeToViewPost }: ListProps) {
+function PostList({ posts, onRemove, onClickWrite, onClickDetail}: ListProps) {
     return (
         <div>
             {posts.map(post => (
-                <PostItem post={post} nextId={nextId} key={post.id} onRemove={onRemove} 
-                changeToEdit={changeToEdit} changeToViewPost={changeToViewPost} />
+                <PostItem  post={post} onRemove={onRemove} onClickWrite={onClickWrite} onClickDetail={onClickDetail} key={post.id}/>
             ))}
         </div>
 

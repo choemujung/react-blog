@@ -1,81 +1,83 @@
 import PostList from './components/PostList';
 import Write from './components/Write';
-import { MutableRefObject, useRef, useState } from 'react';
-import { Item } from './types';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { Item, NextId } from './types';
 import ViewPost from './components/ViewPost'
 import Edit from './components/Edit';
 
 function App() {
   const nextId: MutableRefObject<number> = useRef<number>(1);
   const [posts, setPosts] = useState<Item[]>([]);
-  // const [view, setView] = useState({
-  //   isHome: true,
-  //   isWriting: false,
-  //   isEditing: false,
-  // });
+
   const [view, setView] = useState<string>('Home');
   const [post, setPost] = useState<Item>({
     id: 0,
     title: '',
     content: '',
-    category: '',    
+    category: '',
     date: '',
   });
+
   // 함수
+  // 생성
+  console.log(posts);
+
   const onCreate = (post: Item): void => {
-    setPosts([...posts, post]);
-    nextId.current++;
+    console.log('onCreat')
+    setPosts([post, ...posts]);
     setView('Home');
-    // setView({
-    //   isHome: true,
-    //   isWriting: false,
-    //   isEditing: false,
-    // });
   }
+  // 취소
   const onCancel = (): void => {
-    // setView({
-    //   isHome: true,
-    //   isWriting: false,
-    //   isEditing: false,
-    // });
     setView('Home');
   }
+  // 삭제
   const onRemove = (id: number): void => {
     setPosts(posts.filter(post => post.id !== id));
+    if (view !== 'Home') {
+      setView('Home');
+    }
   }
+  // 수정
   const onUpdate = (newPost: Item): void => {
-    const newPosts = posts.map((currentPost: Item) => (currentPost.id === newPost.id) ? newPost : currentPost);
-    setPosts(newPosts);
+    setPosts(posts.map((currentPost: Item) => (currentPost.id === newPost.id) ? newPost : currentPost));
     setView('Home');
   }
-  const handleClickWriteBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setView({
-    //   isHome: false,
-    //   isWriting: true,
-    //   isEditing: false
-    // });
-    setView('Write');
-  }
-  const changeToViewPost = (view:string, post:Item) => {
-    setView(view);
+  // 상세 뷰 보기
+  const onClickDetail = (post: Item) => {
     setPost(post);
-  };
-  const changeToEdit = (view:string, post:Item) => {
-    setView(view);
-    setPost(post);
-  };
+    setView('ViewPost');
 
+  }
+  // 글쓰기 페이지 보기
+  const onClickWrite = (post?: Item) => {
+    if (post == undefined) {  //글쓰기
+      setView('Create');
+    } else {  //수정
+      setPost(post);
+      setView('Edit');
+    }
+  }
+  // const handleClickWriteBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   setView('Write');
+  // }
+  // const changeToViewPost = (view:string, post:Item) => {
+  //   setView(view);
+  //   setPost(post);
+  // };
+  // const changeToEdit = (view:string, post:Item) => {
+  //   setView(view);
+  //   setPost(post);
+  // };
   function Home() {
     return (
       <div className='container'>
         <div className='header'>
           <span>Blog</span>
-          <button className='writeBtn' onClick={handleClickWriteBtn}>글쓰기</button>
+          <button className='writeBtn' onClick={() => onClickWrite()}>글쓰기</button>
         </div>
         <div className='contents'>
-          <PostList posts={posts} nextId={nextId.current} 
-          onRemove={onRemove} changeToEdit={changeToEdit} changeToViewPost={changeToViewPost} 
-          />
+          <PostList posts={posts} onRemove={onRemove} onClickWrite={onClickWrite} onClickDetail={onClickDetail} />
         </div>
       </div>
     );
@@ -83,16 +85,30 @@ function App() {
 
   switch (view) {
     case 'Home':
-      return <Home />;
-    case 'Write':
-      return <Write nextId={nextId.current} onCreate={onCreate} onCancel={onCancel} />;
-    case 'ViewPost':
-      return <ViewPost post={post} setView={setView}/>
+      return <Home />
+    case 'Create':
+      return <Write onCreate={onCreate} onUpdate={onUpdate} onCancel={onCancel} />
     case 'Edit':
-      return <Edit post={post} onUpdate={onUpdate} onCancel={onCancel}/>
-    default:
-      return null;
+      return <Write post={post} onCreate={onCreate} onUpdate={onUpdate} onCancel={onCancel} />
+    case 'ViewPost':
+      return <ViewPost post={post} onRemove={onRemove} onClickWrite={onClickWrite} onCancel={onCancel} />
+
   }
+  return (
+    <Home />
+  );
+  // switch (view) {
+  //   case 'Home':
+  //     return <Home />;
+  //   case 'Write':
+  //     return <Write nextId={nextId.current} onCreate={onCreate} onCancel={onCancel} />;
+  //   case 'ViewPost':
+  //     // return <ViewPost post={post} setView={setView} onItemClick={onItemClick}/>
+  //   case 'Edit':
+  //     return <Edit post={post} onUpdate={onUpdate} onCancel={onCancel}/>
+  //   default:
+  //     return null;
+  // }
 }
 
 export default App;
