@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Item } from "../types";
-import ViewPost from "./ViewPost";
+
 
 // props type
 interface ItemProps {

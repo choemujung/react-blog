@@ -1,12 +1,11 @@
 import PostList from './components/PostList';
 import Write from './components/Write';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { Item, NextId } from './types';
+import { useState } from 'react';
+import { Item } from './types';
 import ViewPost from './components/ViewPost'
-import Edit from './components/Edit';
+
 
 function App() {
-  const nextId: MutableRefObject<number> = useRef<number>(1);
   const [posts, setPosts] = useState<Item[]>([]);
 
   const [view, setView] = useState<string>('Home');
@@ -58,17 +57,7 @@ function App() {
       setView('Edit');
     }
   }
-  // const handleClickWriteBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   setView('Write');
-  // }
-  // const changeToViewPost = (view:string, post:Item) => {
-  //   setView(view);
-  //   setPost(post);
-  // };
-  // const changeToEdit = (view:string, post:Item) => {
-  //   setView(view);
-  //   setPost(post);
-  // };
+
   function Home() {
     return (
       <div className='container'>
