@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Item, NextId, getNow } from "../types";
-import '../css/Home.css';
+// import '../css/Home.css';
 interface WriteProps {
     post?: Item;
     onCreate: (post: Item) => void;
@@ -43,7 +43,7 @@ function Write({ post, onCreate, onUpdate, onCancel }: WriteProps) {
                             title: titleRef.current.value,
                             content: contentRef.current.value,
                             category: '',
-                            date: '',
+                            date: getNow()
                         }
                         onUpdate(newPost);
                     }

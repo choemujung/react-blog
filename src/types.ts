@@ -7,7 +7,7 @@ export interface Item {
 }
 
 export class NextId {
-    private static id:number=0;
+    private static id:number=5;
 
     static getId(): number {
         NextId.id += 1;

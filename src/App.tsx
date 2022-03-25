@@ -1,15 +1,52 @@
 import PostList from './components/PostList';
 import Write from './components/Write';
-import { useState } from 'react';
-import { Item } from './types';
+import { useRef, useState } from 'react';
+import { Item, getNow } from './types';
 import ViewPost from './components/ViewPost'
+import Search from './components/Search';
+// import './css/Write.css'
 
+type ViewState = 'Home'|'Create'|'Edit'|'Search';
+// enum
 
 function App() {
-  const [view, setView] = useState<string>('Home');
-  const [categories, setCategories] = useState<string[]>([]);
-  const [posts, setPosts] = useState<Item[]>([]);
-  const [post, setPost] = useState<Item>({
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [keyword, setKeyword] = useState<string>('');
+  const [viewDetail, setViewDetail] = useState<boolean>(false);
+  const [view, setView] = useState<ViewState>('Home');
+  // const [categories, setCategories] = useState<string[]>([]);
+  const [posts, setPosts] = useState<Item[]>([{
+    id: 1,
+    title: 'js',
+    content: 'react',
+    category: '',
+    date: getNow(),
+  },{
+    id: 2,
+    title: 'java',
+    content: 'spring',
+    category: '',
+    date: getNow(),
+  },{
+    id: 3,
+    title: 'c#',
+    content: '.net core',
+    category: '',
+    date: getNow(),
+  },{
+    id: 4,
+    title: 'python',
+    content: 'django',
+    category: '',
+    date: getNow(),
+  },{
+    id: 5,
+    title: 'node',
+    content: 'express',
+    category: '',
+    date: getNow(),
+  }]);
+  const [currentPost, setPost] = useState<Item>({
     id: 0,
     title: '',
     content: '',
@@ -19,6 +56,17 @@ function App() {
 
   // 함수
 
+  // 검색
+  const onSearch = () => {
+    if (searchRef.current !== null) {
+      if (searchRef.current.value === '') {
+        alert('검색어를 입력하세요.');
+      } else {
+        setKeyword(searchRef.current.value);
+        setView("Search");
+      }
+    }
+  }
   // 생성
   const onCreate = (post: Item): void => {
     console.log('onCreat')
@@ -43,34 +91,47 @@ function App() {
   }
   // 상세 뷰 보기
   const onClickDetail = (post: Item) => {
-    setPost(post);
-    setView('ViewPost');
-
+    if (viewDetail) {
+      (post.id === currentPost.id) ? setViewDetail(false) : setPost(post);
+    } else {
+      setPost(post);
+      setViewDetail(true);
+    }
+    // setPost(post);
+    // setViewDetail(true);
   }
   // 글쓰기 페이지 보기
+  const [updatePost, setUpdatePost] = useState<Item>({
+    id: 0,
+    title: '',
+    content: '',
+    category: '',
+    date: '',
+  });
   const onClickWrite = (post?: Item) => {
-    if (post == undefined) {  //글쓰기
+    if (post === undefined) {  //글쓰기
       setView('Create');
     } else {  //수정
-      setPost(post);
+      setUpdatePost(post);
       setView('Edit');
     }
   }
 
   function Home() {
+    console.log(posts);
     return (
-      <div className='container'>
-        <div className='header'>
-          <div className='title'>
-            <span>Blog</span>
-          </div>
-          <div className='write'>
-            <button className='writeBtn' onClick={() => onClickWrite()}>글쓰기</button>
-          </div>
+      <div>
+        <div>
+          <input type="text" ref={searchRef} />
+          <button onClick={onSearch}>검색</button>
+          <span><h1>블로그</h1></span>
+          <button onClick={()=>onClickWrite()}>글쓰기</button>
+          <PostList posts={posts} onRemove={onRemove} onClickDetail={onClickDetail} 
+          onClickWrite={onClickWrite}/>
         </div>
-        <div className='contents'>
-          <PostList posts={posts} onRemove={onRemove} onClickWrite={onClickWrite} onClickDetail={onClickDetail} />
-        </div>
+        {
+          viewDetail && <ViewPost post={currentPost} onRemove={onRemove} onClickWrite={onClickWrite} onCancel={onCancel} />
+        }
       </div>
     );
   }
@@ -82,15 +143,16 @@ function App() {
     case 'Create':
       return <Write onCreate={onCreate} onUpdate={onUpdate} onCancel={onCancel} />
     case 'Edit':
-      return <Write post={post} onCreate={onCreate} onUpdate={onUpdate} onCancel={onCancel} />
-    case 'ViewPost':
-      return <ViewPost post={post} onRemove={onRemove} onClickWrite={onClickWrite} onCancel={onCancel} />
-
+      return <Write post={currentPost} onCreate={onCreate} onUpdate={onUpdate} onCancel={onCancel} />
+    case 'Search':
+      return (
+        <div>
+          <Search keyword={keyword} posts={posts} onRemove={onRemove}
+            onClickDetail={onClickDetail} onClickWrite={onClickWrite} />
+          {viewDetail && <ViewPost post={currentPost} onRemove={onRemove} onClickWrite={onClickWrite} onCancel={onCancel} />}
+        </div>
+      )
   }
-  return (
-    <Home />
-  );
-
 }
 
 export default App;
