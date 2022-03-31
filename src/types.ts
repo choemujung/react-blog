@@ -18,7 +18,7 @@ export class NextId {
 export const getNow = (): string => {
     const date = new Date();
     return (
-        String(date.getFullYear()) + '. ' + String(date.getMonth()) + '. ' + String(date.getDay()) + '. ' + 
+        String(date.getFullYear()) + '. ' + String(date.getMonth()+1) + '. ' + String(date.getDate()) + '. ' + 
         String(date.getHours()) + ':' + String(date.getMinutes())
     );
 }

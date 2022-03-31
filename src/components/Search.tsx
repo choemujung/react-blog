@@ -1,26 +1,19 @@
 import { useRef, useEffect, useState } from 'react';
-import { Item } from '../types';
+import postStore, { Item } from '../store/post';
 import PostList from './PostList';
-import ViewPost from './ViewPost';
+import ViewPost from './Detail';
+import { observer } from 'mobx-react';
 
-interface SearchProps {
-    keyword: string;
-    posts: Item[];
-    onRemove: (id: number) => void;
-    onClickWrite: (item: Item) => void;
-    onClickDetail: (item: Item) => void;
-}
+const Search = observer(() => {
 
-function Search({ keyword, posts, onRemove, onClickDetail, onClickWrite }: SearchProps) {
     const searchRef = useRef<HTMLInputElement>(null);
-    const filteredPosts: Item[] = posts.filter(post =>
-        (post.title.includes(keyword) || post.content.includes(keyword))
-    );
 
     useEffect(() => {
         if (searchRef.current !== null) {
-            searchRef.current.value = keyword;
+            searchRef.current.value = postStore.keyword;
         }
+
+        console.log(postStore.keyword + ' ' + postStore.filteredPosts);
     }, []);
 
     return (
@@ -29,10 +22,10 @@ function Search({ keyword, posts, onRemove, onClickDetail, onClickWrite }: Searc
                 <input ref={searchRef} type="text" />
                 <button>검색</button>
             </div>
-            <PostList posts={filteredPosts} onRemove={onRemove} onClickWrite={onClickWrite}
-                onClickDetail={onClickDetail} />
+            <PostList posts={postStore.filteredPosts} />
         </div>
     )
-}
+
+});
 
 export default Search;
